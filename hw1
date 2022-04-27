@@ -1,0 +1,119 @@
+--EMILIANO BOBADILLA FRANCO
+-- parte 1
+--1
+select s.contact_name, s.phone, s.contact_title  
+from suppliers s 
+where s.contact_title like '%ales %epresentative' 
+order by s.contact_name ;
+
+--2
+select s.contact_name, s.phone, s.contact_title  
+from suppliers s 
+where s.contact_title not like '%arketing %anager' 
+order by s.contact_name;
+
+--3
+select o.order_id ,c.contact_name , c.country  
+from customers c join orders o using (customer_id ) 
+where o.ship_country not like 'USA' order by o.ship_country  ;
+
+--4
+select  p.product_name as Cheese_products, p.units_in_stock  
+from products p 
+where p.category_id =4;
+
+--5
+select  o.order_id, o.ship_name, o.ship_country 
+from orders o 
+where o.ship_country like '%elgium' or o.ship_country like '%rance' 
+order by o.ship_country, o.ship_name ;
+
+--6
+select o.order_id, o.ship_name , o.ship_country 
+from orders o where o.ship_country like 'Argentina' or o.ship_country like 'Brazil' or o.ship_country like 'Venezuela' 
+order by o.ship_country , o.ship_name;
+
+--7
+select o.order_id, o.ship_name , o.ship_country 
+from orders o 
+where o.ship_country not like 'Argentina' and o.ship_country not like 'Brazil' and o.ship_country not like 'Venezuela' 
+order by o.ship_country , o.ship_name;
+
+--8
+select concat(e.first_name,' ' , e.last_name) as employees_full_name 
+from employees e
+order by employees_full_name;
+
+--9
+select sum(p.unit_price * p.units_in_stock ) as money_in_stock 
+from products p;
+
+--10
+select  c.country,  count(*) as number_of_customers   
+from customers c 
+group by c.country 
+order by number_of_customers desc;
+
+--  parte 2
+--1
+select concat(e.first_name,' ' , e.last_name) as employee_name, age(current_date, e.birth_date) as employee_age
+from employees e
+order by employee_age desc;
+
+--2
+select max(o.order_date) as most_recent_order, c.customer_id, c.contact_name  
+from customers c join orders o using(customer_id)
+group by customer_id
+order by most_recent_order desc;
+
+--3
+select  c.contact_title as funcion , count(*) as n_of_customers 
+from customers c 
+group by c.contact_title 
+order by c.contact_title ;
+
+--4
+select c.category_name  ,count (*) as n_of_products  
+from products p join categories c using(category_id) 
+group by c.category_name 
+order by count(*) desc;
+
+--5 
+select p.product_id as products_that_need_restock, p.product_name, p.units_on_order, p.units_in_stock, (units_on_order - units_in_stock)  as units_needed
+from products p 
+where p.discontinued=0 and p.units_on_order > p.units_in_stock;
+
+--6
+select o.order_id as order_w_most_volume,o.ship_name , o.ship_country  , od.quantity  
+from order_details od join orders o using(order_id) 
+order by od.quantity desc limit 1;
+
+--7
+select o.customer_id, (od.unit_price*quantity*(1-od.discount)) as customer_total_purchase,
+case
+	when (od.unit_price*quantity*(1-od.discount)) > (select avg(od2.unit_price*od2.quantity*(1-od2.discount)) from order_details od2) then 'Buen cliente'
+	when (od.unit_price*quantity*(1-od.discount)) < (select avg(od2.unit_price*od2.quantity*(1-od2.discount)) from order_details od2) then 'Mal cliente'
+	else 'Cliente regular'
+end as tipo_de_cliente
+from order_details od join orders o using(order_id);
+
+--8
+select distinct concat(e.first_name,' ' , e.last_name) as employees_worked_xmas
+from orders o join employees e using (employee_id) 
+where cast(o.order_date as text) like '%-12-25';
+
+--9
+select od.product_id as product_id_sent_on_Xmas, o.shipped_date 
+from orders o join order_details od using (order_id)
+where cast(o.shipped_date as text) like '%-12-25';
+
+--10
+select sum(od.quantity) as product_volume, o.ship_country  
+from order_details od join orders o using(order_id) 
+group by o.ship_country 
+order by sum(od.quantity) desc limit 1;
+
+-- la 6 y la 10 no es lo mismo, la 6 te pregunta cual es la order más volumminosa osea una sola order
+-- mientras que la 10 te pide el pais con mayor numero de volumen en total no solamente cual es el pais que recibe la order con mayor volumen
+-- puede haber un pais con una order con columen enorme pero hay paises con muchas orders pequeñas que en total acumulan mas volumen
+-- no tendria sentido preguntar lo mismo 2 veces y en efecto no se pregunta lo mismo 

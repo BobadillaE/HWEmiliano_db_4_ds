@@ -115,5 +115,5 @@ order by sum(od.quantity) desc limit 1;
 
 -- la 6 y la 10 no es lo mismo, la 6 te pregunta cual es la order más volumminosa osea una sola order
 -- mientras que la 10 te pide el pais con mayor numero de volumen en total no solamente cual es el pais que recibe la order con mayor volumen
--- puede haber un pais con una order con columen enorme pero hay paises con muchas orders pequeñas que en total acumulan mas volumen
+-- puede haber un pais con una order con volumen enorme pero hay paises con muchas orders pequeñas que en total acumulan mas volumen
 -- no tendria sentido preguntar lo mismo 2 veces y en efecto no se pregunta lo mismo 

@@ -1,0 +1,38 @@
+
+select * from payment p 
+where p.amount = 1.98 or p.amount = 7.98 or p.amount = 9.98;
+
+select sum(amount) as total_payed, concat(c.first_name,' ',c.last_name)  as customer_full_name,  c.customer_id  
+from customer c join payment p using(customer_id)
+where c.last_name like '_A%W%'
+group by customer_id ;
+
+
+create table emails2 (
+	nombre varchar(100) not null,
+	email varchar(100) not null
+);
+
+insert into emails2 values ('Wanda Maximoff', 'wanda.maximoff@avengers.org') ;
+insert into emails2 values ('Pietro Maximoff', 'pietro@mail.sokovia.ru') ;
+insert into emails2 values ('Erik Lensherr','fuck_you_charles@brotherhood.of.evil.mutants.space') ;
+insert into emails2 values ('Charles Xavier',	'i.am.secretely.filled.with.hubris@xavier-school-4-gifted-youngste.') ;
+insert into emails2 values ('Anthony Edward Stark',	'iamironman@avengers.gov');
+insert into emails2 values ('Steve Rogers',	'americas_ass@anti_avengers') ;
+insert into emails2 values ('The Vision',	'vis@westview.sword.gov') ;
+insert into emails2 values ('Clint Barton',	'bul@lse.ye') ;
+insert into emails2 values  ('Natasja Romanov',	'blackwidow@kgb.ru');
+insert into emails2 values  ('Thor',	'god_of_thunder-^_^@royalty.asgard.gov');
+insert into emails2 values  ('Logan',	'wolverine@cyclops_is_a_jerk.com');
+insert into emails2 values ('Ororo Monroe',	'ororo@weather.co') ;
+insert into emails2 values  ('Scott Summers', 'o@x');
+insert into emails2 values ('Nathan Summers',	'cable@xfact.or') ;
+insert into emails2 values  ('Groot',	'iamgroot@asgardiansofthegalaxyledbythor.quillsux');
+insert into emails2 values ('Nebula',	'idonthaveelektras@complex.thanos') ;
+insert into emails2 values ('Gamora',	'thefiercestwomaninthegalaxy@thanos.') ;
+insert into emails2 values ('Rocket',	'shhhhhhhh@darknet.ru');
+
+select * from emails2 e 
+where e.email not like '%_@__%.__%' 
+or position ('-' in e.email)>0
+or length(e.email)- length (replace(e.email,'.',''))>1;

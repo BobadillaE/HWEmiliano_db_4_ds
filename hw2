@@ -39,5 +39,4 @@ insert into emails2 values ('Rocket',	'shhhhhhhh@darknet.ru');
 -- Construyan un query que regrese emails inválidos
 select * from emails2 e 
 where e.email not like '%_@__%.__%' 
-or position ('-' in e.email)>0
-or length(e.email)- length (replace(e.email,'.',''))>1;
+or position ('-^_^' in e.email)>0;

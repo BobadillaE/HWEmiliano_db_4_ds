@@ -1,0 +1,30 @@
+
+-- 1
+select concat(c.first_name,' ',c.last_name) as customer_full_name, c.email 
+from customer c join address a using(address_id) 
+join city c2 using(city_id)
+join country c3 using(country_id)
+where c3.country like 'Canada';
+
+--2
+select  concat(c.first_name,' ',c.last_name) as customer_full_name, count(*) as n_of_rentals
+from customer c join rental r using(customer_id) 
+join inventory i using(inventory_id)
+join film f using (film_id)
+where f.rating = 'NC-17'
+group by f.rating, c.customer_id 
+order by n_of_rentals  desc;
+
+--3
+select count(*) as n_of_rentals, f.title  
+from film f join inventory i using (film_id)
+join rental r using (inventory_id)
+group by f.title 
+order by n_of_rentals desc;
+
+--4
+select sum(p.amount) as revenue, s.store_id   
+from store s join inventory i using (store_id)
+join rental r using(inventory_id)
+join payment p using(rental_id)
+group by s.store_id ;

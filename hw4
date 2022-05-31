@@ -1,0 +1,75 @@
+
+-- promedio de tiempo entre cada pago por cliente de la BD Sakila
+
+--este me da el avg en timestamp
+
+with dea as ( 
+	select customer_id, payment_date - lag(payment_date,1) over (partition by customer_id order by payment_date asc) as dias_entre_act
+	from payment p 
+)
+select d.customer_id, avg(dias_entre_act) as avg_tiempo_entre_compras  
+from dea d 
+group by customer_id;
+
+
+-- este me da avg en numeros en segundos
+with dea as ( 
+	select customer_id, payment_date - lag(payment_date,1) over (partition by customer_id order by payment_date asc) as dias_entre_act
+	from payment p 
+)
+select d.customer_id, extract(epoch from(avg(dias_entre_act))) as avg_tiempo_entre_compras  
+from dea d 
+group by customer_id;
+
+-- Sigue una distribución normal? 
+
+
+create view it as(
+with dea as ( 
+	select customer_id, payment_date - lag(payment_date,1) over (partition by customer_id order by payment_date asc) as dias_entre_act
+	from payment p 
+)
+select d.customer_id, extract(epoch from(avg(dias_entre_act))) as avg_tiempo_entre_compras  
+from dea d 
+group by customer_id
+);
+
+select * from it ;
+select * from histogram('it','avg_tiempo_entre_compras');
+
+
+-- Qué tanto difiere ese promedio del tiempo entre rentas por cliente?
+
+-- promedio en fecha
+with dea as ( 
+	select customer_id, rental_date  - lag(rental_date ,1) over (partition by customer_id order by rental_date  asc) as dias_entre_renta
+	from rental r 
+)
+select d.customer_id, avg(dias_entre_renta) as avg_tiempo_entre_renta
+from dea d
+group by customer_id;
+
+-- promedio en segundos 
+with dea as ( 
+	select customer_id, rental_date  - lag(rental_date ,1) over (partition by customer_id order by rental_date  asc) as dias_entre_renta
+	from rental r 
+)
+select d.customer_id, extract(epoch from(avg(dias_entre_renta))) as avg_tiempo_entre_renta
+from dea d
+group by customer_id;
+
+
+create view abb as (
+	with dea as ( 
+		select customer_id, rental_date  - lag(rental_date ,1) over (partition by customer_id order by rental_date  asc) as dias_entre_renta
+		from rental r 
+	)
+	select d.customer_id, extract(epoch from(avg(dias_entre_renta))) as avg_tiempo_entre_renta
+	from dea d
+	group by customer_id
+);
+
+select * from abb;
+select * from histogram('abb', 'avg_tiempo_entre_renta');
+
+-- conclusion los dos queries son iguales , se puede observar en los promedios y los histogramas

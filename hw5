@@ -1,0 +1,58 @@
+-- Cada cilindro tiene un volumen máximo de 50 kg y cada peli pesa 500 gramos
+
+select (50/0.5) as pelis_x_cilindro;
+
+-- Nos damos cuenta que caben 100 pelis en un cilindro 
+
+select count(film_id) 
+from inventory i  ;
+
+-- tenemos 4581 movies en total
+select store_id , count(*) 
+from inventory i 
+group by store_id ;
+
+-- store 1 son 2270 movies y store 2 son 2311
+
+select ceil(2270*1./100);
+select ceil(2311*1./100);
+
+-- necesitariamos 23 cilindros para la store 1 y 24 para la store 2
+
+--volumen de una caja de pelicula 
+select 20*13.5*1.5;
+
+-- volumen de caja con brazo 
+select 30*21*8;
+
+-- falta sacar el volumen del cilindro
+-- Los discos los acomodariamos de manera circular de manera que se formaria un circulo dentro de otro circulo con las cajas
+-- podriamos tener 4 niveles de 25 cajas cada uno en lugar de tener uno solo con 100 pelis
+-- seria como un poligono de 25 lados inscrito en un circulo con ancho de 8cm
+
+-- el perimetro del circulo interior formado por las cajas seria de
+select 25*8;
+
+-- el radio del circulo (apotema) interior esta dado por
+select(25*8)/(2*pi());
+
+-- el radio del cilindro entonces esta dado por mi apotema mas los 30 cm de la caja de la peli
+select ((25*8)/(2*pi())) + 30;
+
+-- ahora la altura de los 4 pisos de cajas de pelis con 21 cm de altura c/u ya que se encuentran acostadas las cajas
+select 21*4;
+
+-- Finalmente el volumen de nuestro cilindro que contiene 100 cajas de pelis seria de
+
+select pi()*power((((25*8)/(2*pi())) + 30),2)*(21*4);
+
+-- en cm cubicos
+
+-- MEDIDAS DE NUESTRO CILINDRO:
+-- ALTURA: 200 CM
+-- RADIO : 61.83098861837907 CM
+-- VOLUMEN TOTAL: 1008884.7090057725 CM3
+-- CAPACIDAD TOTAL: 100 CAJAS DE 30cm x 21cm x 8cm 
+
+select i.store_id,ceil((count(f.film_id)*1.)/100) as cilindros  from inventory i join film f using (film_id) group by i.store_id  ;
+select pi()*power((((25*8)/(2*pi())) + 30),2)*(21*4) as volumen, 21*4 as altura,  ((25*8)/(2*pi())) + 30 as radio;
